@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NMBS App - Smart Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* NMBS App Kleuren en Typografie */
+        :root {
+            --bg-dark: #00112e;
+            --bg-board: #001d4d;
+            --bg-header: #003590;
+            --bg-row: #002366;
+            --bg-accent: #002b7a;
+            --yellow-neon: #ffd300;
+            --blue-light: #bcd4ff;
+            --orange-delay: #ff9100;
+            --red-cancel: #ff4040;
+            --green-ok: #00cc66;
+            --train-blue: #0057ff;
+            --font-mono: "JetBrains Mono", monospace;
+            --font-gothic: "Jeju Gothic", sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: white;
+            font-family: var(--font-mono);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        
+        /* Simuleert een mobiel scherm */
+        .app-container {
+            width: 100%;
+            max-width: 450px; /* Typische mobiele breedte */
+            min-height: 100vh;
+            background: var(--bg-board);
+            box-shadow: 0 0 50px rgba(0, 70, 255, 0.4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        .app-header {
+            background: var(--bg-header);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--train-blue);
+        }
+        .app-title {
+            font-family: var(--font-gothic);
+            font-size: 1.5rem;
+            color: var(--yellow-neon);
+        }
+        .app-icon { font-size: 1.2rem; color: var(--blue-light); }
+        .back-button { display: none; color: var(--blue-light); cursor: pointer; font-size: 1.2rem; }
+
+        /* CONTENT WEERGAVE */
+        .app-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-bottom: 60px; /* Ruimte voor de navigatiebalk */
+        }
+        .view {
+            display: none;
+            padding: 10px;
+        }
+        .view.active {
+            display: block;
+        }
+        
+        /* Vertrekbord Stijl (Overgenomen van Bord 1) */
+        .departure-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--bg-accent);
+            cursor: pointer; /* Maakt de rij klikbaar */
+        }
+        .departure-row:hover { background: rgba(255, 255, 255, 0.05); }
+        .time-col { width: 15%; text-align: left; font-weight: 700; color: #d8ecff; padding-left: 10px; }
+        .dest-col { width: 45%; }
+        .perron-col { width: 15%; text-align: center; }
+        .info-col { width: 25%; text-align: right; padding-right: 10px; font-weight: 700; }
+        
+        .dest-col h4 { font-size: 0.9rem; color: var(--yellow-neon); margin: 0; }
+        .dest-col p { font-size: 0.75rem; color: var(--blue-light); margin: 0; }
+
+        .perron-box {
+            background: var(--yellow-neon);
+            color: var(--bg-dark);
+            border-radius: 4px;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .status-delay { color: var(--orange-delay); }
+        .status-ok { color: var(--green-ok); }
+        .status-cancel { color: var(--red-cancel); }
+
+
+        /* Perron/Trein Detail Weergave (Geïntegreerd Bord 2 & 3 esthetiek) */
+        .detail-header {
+            background: var(--bg-accent);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        .detail-title { font-family: var(--font-gothic); color: var(--yellow-neon); margin: 0; }
+        .detail-info { color: var(--blue-light); font-size: 0.9rem; margin-top: 5px; }
+
+        /* Wagonindeling Mockup */
+        .wagon-map {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+            gap: 5px;
+        }
+        .wagon-item {
+            flex-shrink: 0;
+            width: 80px;
+            height: 120px;
+            background: var(--bg-row);
+            border-radius: 6px;
+            border: 2px solid;
+            padding: 5px;
+            text-align: center;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .wagon-item.first { border-color: var(--yellow-neon); }
+        .wagon-item.second { border-color: var(--train-blue); }
+        .wagon-number { font-weight: 700; font-size: 1.1rem; }
+        .class-icon { font-size: 1.2rem; }
+
+
+        /* BOTTOM NAVIGATIE */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 450px;
+            background: var(--bg-header);
+            border-top: 2px solid var(--train-blue);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            color: var(--blue-light);
+            font-size: 0.7rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .nav-item.active {
+            color: var(--yellow-neon);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="app-header">
+        <i class="fas fa-arrow-left back-button" id="back-btn"></i>
+        <h1 class="app-title" id="header-title">VERTREK BORDEN</h1>
+        <i class="fas fa-search app-icon"></i>
+    </div>
+
+    <div class="app-content">
+
+        <div class="view active" id="departure-view">
+            <div class="departure-row">
+                <div class="time-col">16:32</div>
+                <div class="dest-col">
+                    <h4>Antwerpen-Centraal</h4>
+                    <p>Anvers-Central / via Mechelen</p>
+                </div>
+                <div class="perron-col"><div class="perron-box">3</div></div>
+                <div class="info-col"><span class="status-ok">OP TIJD</span></div>
+            </div>
+
+            <div class="departure-row" onclick="showTrainDetail('Luik-Guillemins', '7', '+5 min')">
+                <div class="time-col">16:34</div>
+                <div class="dest-col">
+                    <h4>Luik-Guillemins</h4>
+                    <p>Liège-Guillemins / via Leuven</p>
+                </div>
+                <div class="perron-col"><div class="perron-box">7</div></div>
+                <div class="info-col"><span class="status-delay">+5 min</span></div>
+            </div>
+
+            <div class="departure-row" onclick="showPlatformDetail('Gent-Sint-Pieters', '2')">
+                <div class="time-col">16:39</div>
+                <div class="dest-col">
+                    <h4>Gent-Sint-Pieters</h4>
+                    <p>Gand-St-Pierre / via Dendermonde</p>
+                </div>
+                <div class="perron-col"><div class="perron-box">2</div></div>
+                <div class="info-col"><span class="status-ok">OP TIJD</span></div>
+            </div>
+
+            <div class="departure-row" onclick="showTrainDetail('Charleroi-Sud', '5', 'GEANNULEERD')">
+                <div class="time-col">16:41</div>
+                <div class="dest-col">
+                    <h4>Charleroi-Sud</h4>
+                    <p>Charleroi-Sud / via Nivelles</p>
+                </div>
+                <div class="perron-col"><div class="perron-box" style="background:#444;">5</div></div>
+                <div class="info-col"><span class="status-cancel">GEANNULEERD</span></div>
+            </div>
+        </div>
+
+        <div class="view" id="platform-view">
+            <div class="detail-header">
+                <h2 class="detail-title" id="platform-dest"></h2>
+                <p class="detail-info" id="platform-num"></p>
+                <p class="detail-info" id="platform-status">Laatste status: OP TIJD</p>
+            </div>
+
+            <div style="padding: 10px; font-size: 0.9rem;">
+                <p style="color: var(--yellow-neon); margin-bottom: 5px;">Andere vertrekken vanaf Perron <span id="other-platform-num">2</span>:</p>
+                <div class="departure-row" style="padding: 8px 0;">
+                    <div class="time-col" style="width: 25%;">17:09</div>
+                    <div class="dest-col" style="width: 50%;"><h4>Kortrijk</h4><p>Courtrai / S</p></div>
+                    <div class="info-col" style="width: 25%;"><span class="status-ok">OP TIJD</span></div>
+                </div>
+                <div class="departure-row" style="padding: 8px 0;">
+                    <div class="time-col" style="width: 25%;">17:39</div>
+                    <div class="dest-col" style="width: 50%;"><h4>Oostende</h4><p>Ostende / IC</p></div>
+                    <div class="info-col" style="width: 25%;"><span class="status-delay">+3 min</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="view" id="train-detail-view">
+            <div class="detail-header">
+                <h2 class="detail-title" id="train-dest"></h2>
+                <p class="detail-info" id="train-perron-time"></p>
+                <p class="detail-info"><span id="train-status"></span></p>
+            </div>
+
+            <h3 style="padding: 10px; font-size: 1.1rem; color: var(--blue-light);">Wagonindeling (Perron 7)</h3>
+            <div class="wagon-map">
+                <div class="wagon-item first">
+                    <span class="wagon-number">1</span>
+                    <i class="fas fa-mug-hot class-icon" style="color: var(--yellow-neon);"></i>
+                    <span>1e Klas</span>
+                </div>
+                <div class="wagon-item second">
+                    <span class="wagon-number">2</span>
+                    <i class="fas fa-chair class-icon" style="color: var(--blue-light);"></i>
+                    <span>2e Klas</span>
+                </div>
+                <div class="wagon-item second" style="border-color: var(--green-ok); box-shadow: 0 0 10px var(--green-ok);">
+                    <span class="wagon-number">3</span>
+                    <i class="fas fa-wifi class-icon"></i>
+                    <span style="color: var(--green-ok); font-weight: 700;">UW WAGON</span>
+                </div>
+                <div class="wagon-item second">
+                    <span class="wagon-number">4</span>
+                    <i class="fas fa-wheelchair class-icon"></i>
+                    <span>2e Klas</span>
+                </div>
+                <div class="wagon-item second">
+                    <span class="wagon-number">5</span>
+                    <i class="fas fa-chair class-icon"></i>
+                    <span>2e Klas</span>
+                </div>
+            </div>
+            
+            <p style="padding: 10px; color: var(--blue-light); font-size: 0.85rem; border-top: 1px solid var(--bg-accent); margin-top: 20px;">
+                <i class="fas fa-compass" style="color: var(--yellow-neon);"></i> De trein rijdt in de richting van Luik-Guillemins.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchView('departure-view', 'VERTREK BORDEN', this)">
+            <i class="fas fa-list-alt"></i>
+            <span>Vertrek</span>
+        </div>
+        <div class="nav-item" onclick="switchView('platform-view', 'PERRON INFORMATIE', this)">
+            <i class="fas fa-train"></i>
+            <span>Perron 7</span>
+        </div>
+        <div class="nav-item" onclick="switchView('train-detail-view', 'WAGON INDELING', this)">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Mijn Reis</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-cog"></i>
+            <span>Instellingen</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const headerTitle = document.getElementById('header-title');
+    const backBtn = document.getElementById('back-btn');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    // Functie om van weergave te wisselen
+    function switchView(viewId, title, navEl) {
+        document.querySelectorAll('.view').forEach(view => {
+            view.classList.remove('active');
+        });
+        document.getElementById(viewId).classList.add('active');
+        
+        // Titel en terugknop bijwerken
+        headerTitle.textContent = title;
+        backBtn.style.display = (viewId === 'departure-view') ? 'none' : 'block';
+
+        // Navigatie-items bijwerken
+        navItems.forEach(item => item.classList.remove('active'));
+        if (navEl) {
+            navEl.classList.add('active');
+        } else {
+             // Als de weergave wordt gewisseld via de terugknop, de nav-status resetten
+             document.querySelector('.nav-item').classList.add('active');
+        }
+    }
+
+    // Specifieke functies voor interactie vanuit het vertrekbord
+    function showTrainDetail(destination, perron, status) {
+        // Update de detailweergave met specifieke treininfo (mock data)
+        document.getElementById('train-dest').textContent = destination;
+        document.getElementById('train-perron-time').textContent = `Perron ${perron} - Vertrek 16:34`;
+        document.getElementById('train-status').textContent = `Status: ${status}`;
+        
+        switchView('train-detail-view', 'TREIN DETAIL', null);
+    }
+    
+    function showPlatformDetail(destination, perron) {
+        // Update de detailweergave met specifieke perroninfo (mock data)
+        document.getElementById('platform-dest').textContent = `PERRON ${perron} - ${destination}`;
+        document.getElementById('platform-num').textContent = `Volgende Trein: ${destination}`;
+        document.getElementById('other-platform-num').textContent = perron;
+        
+        switchView('platform-view', 'PERRON DETAIL', null);
+    }
+
+    // Terugknop functionaliteit
+    backBtn.onclick = function() {
+        switchView('departure-view', 'VERTREK BORDEN', null);
+    }
+    
+    // Bij het starten is alleen 'Vertrek' actief, de andere nav-items zijn niet geselecteerd
+    document.querySelector('.nav-item').classList.add('active');
+
+</script>
+
+</body>
+</html>

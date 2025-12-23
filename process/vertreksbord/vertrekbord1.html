@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="nl" class="bg-[#001c66] text-white">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vertrekbord Brussel-Centraal</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&family=JetBrains+Mono&display=swap"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      h1, h2, h3 {
+        font-family: 'Jeju Gothic', sans-serif;
+      }
+      body, p, div, span {
+        font-family: 'JetBrains Mono', monospace;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex items-center justify-center p-10">
+    <div class="w-[860px] bg-[#0026a3] rounded-2xl shadow-xl overflow-hidden border border-[#0041c2]">
+      <!-- Header -->
+      <div class="bg-[#001c66] px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+          <div class="rounded-full bg-white text-[#001c66] w-10 h-10 flex items-center justify-center text-xl font-bold">🚆</div>
+          <div>
+            <h1 class="text-xl font-bold">VERTREK / DÉPART / ABFAHRT</h1>
+            <h3 class="text-sm text-slate-300">Brussel-Centraal / Bruxelles-Central</h3>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-sm font-semibold">
+          <span>🕒</span> <span>16:31</span>
+        </div>
+      </div>
+
+      <!-- Kolomkoppen -->
+      <div class="grid grid-cols-[100px_1fr_100px_120px_100px] bg-[#0035b5] text-xs uppercase text-[#bcd4ff] px-6 py-3 font-bold">
+        <h3>TIJD / HEURE / ZEIT</h3>
+        <h3>BESTEMMING / DESTINATION / ZIEL</h3>
+        <h3>PERRON / VOIE / GLEIS</h3>
+        <h3>TREIN / TRAIN / ZUG</h3>
+        <h3>INFO</h3>
+      </div>
+
+      <!-- Rij 1 -->
+      <div class="grid grid-cols-[100px_1fr_100px_120px_100px] px-6 py-4 border-t border-[#0041c2] bg-[#0026a3]">
+        <p class="text-lg text-[#bfe0ff]">16:32</p>
+        <div>
+          <h2 class="text-yellow-300 text-lg">Antwerpen-Centraal</h2>
+          <p class="text-xs text-slate-300">via Mechelen</p>
+        </div>
+        <div class="flex items-center justify-center">
+          <div class="bg-yellow-300 text-[#001c66] rounded-md w-8 h-8 flex items-center justify-center font-bold">3</div>
+        </div>
+        <p class="bg-[#003b91] text-white rounded-md w-[80px] text-center py-1 font-semibold text-sm">IC 1356</p>
+        <p class="text-green-400 text-sm font-bold text-center">OP TIJD</p>
+      </div>
+
+      <!-- Rij 2 -->
+      <div class="grid grid-cols-[100px_1fr_100px_120px_100px] px-6 py-4 border-t border-[#0041c2] bg-[#0026a3]">
+        <p class="text-lg text-[#bfe0ff]">16:34</p>
+        <div>
+          <h2 class="text-yellow-300 text-lg">Luik-Guillemins</h2>
+          <p class="text-xs text-slate-300">via Leuven</p>
+        </div>
+        <div class="flex items-center justify-center">
+          <div class="bg-yellow-300 text-[#001c66] rounded-md w-8 h-8 flex items-center justify-center font-bold">7</div>
+        </div>
+        <p class="bg-[#003b91] text-white rounded-md w-[80px] text-center py-1 font-semibold text-sm">IC 2163</p>
+        <p class="text-orange-300 text-sm font-bold text-center">+5 min</p>
+      </div>
+
+      <!-- Rij 3 -->
+      <div class="grid grid-cols-[100px_1fr_100px_120px_100px] px-6 py-4 border-t border-[#0041c2] bg-[#0026a3]">
+        <p class="text-lg text-[#bfe0ff]">16:39</p>
+        <div>
+          <h2 class="text-yellow-300 text-lg">Gent-Sint-Pieters</h2>
+          <p class="text-xs text-slate-300">via Dendermonde</p>
+        </div>
+        <div class="flex items-center justify-center">
+          <div class="bg-yellow-300 text-[#001c66] rounded-md w-8 h-8 flex items-center justify-center font-bold">2</div>
+        </div>
+        <p class="bg-[#003b91] text-white rounded-md w-[80px] text-center py-1 font-semibold text-sm">P 1432</p>
+        <p class="text-green-400 text-sm font-bold text-center">OP TIJD</p>
+      </div>
+
+      <!-- Rij 4 (alert) -->
+      <div class="grid grid-cols-[100px_1fr_]()

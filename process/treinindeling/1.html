@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Train Composition — statische HTML</title>
+<link href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#001d4d;
+  --panel:#002366;
+  --accent:#ffd300;
+  --blue1:#0057ff;
+  --blue2:#003d9e;
+  --muted:#b6c7e8;
+  --glass: rgba(255,255,255,0.04);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:#041a6a;font-family: "JetBrains Mono", monospace;color:#fff}
+.container{max-width:1400px;margin:28px auto;border:1px solid #0044c2;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,78,255,0.16), 0 20px 80px rgba(0,32,255,0.08)}
+.header{display:flex;align-items:center;justify-content:space-between;padding:28px;background:linear-gradient(90deg,var(--blue2),var(--blue1));gap:18px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand svg{width:56px;height:56px;fill:var(--accent)}
+.title h1{font-family:"Jeju Gothic",sans-serif;margin:0;font-size:26px;color:var(--accent);text-transform:uppercase}
+.title p{margin:2px 0 0;color:#bfe0ff}
+.clock{font-size:26px;color:#cde7ff;font-weight:700}
+.info-bar{display:flex;justify-content:space-between;align-items:center;padding:20px 28px;background:var(--panel);border-bottom:1px solid #003b95}
+.info-left{display:flex;gap:18px;align-items:center}
+.tag{background:var(--blue1);padding:8px 18px;border-radius:10px;font-weight:800}
+.tag.small{font-size:14px;padding:6px 12px}
+.info-right{text-align:right}
+.dest{color:var(--accent);font-family:"Jeju Gothic",sans-serif;font-size:20px;margin-bottom:6px}
+.via{color:var(--muted)}
+.content{padding:28px}
+.composition{display:flex;flex-direction:column;gap:22px}
+.composition-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);padding:18px;border-radius:12px}
+.train-header{display:flex;justify-content:space-between;align-items:flex-start}
+.train-left{display:flex;gap:16px;align-items:center}
+.train-time{font-size:28px;font-weight:800}
+.train-meta{display:flex;flex-direction:column}
+.train-type{display:inline-block;padding:6px 12px;border-radius:8px;font-weight:800}
+.train-number{color:#cbdcff}
+.train-dest{display:flex;gap:8px;align-items:center;margin-top:8px}
+.train-right{text-align:right}
+.platform{display:inline-block;background:var(--accent);color:#001a4d;padding:10px 16px;border-radius:10px;font-weight:900;font-size:22px;box-shadow:0 0 10px rgba(255,235,122,0.2)}
+.sector{color:var(--muted);margin-top:6px}
+.delay{color:#ffb347;font-weight:800;display:inline-flex;align-items:center;gap:6px}
+.ontime{color:#7efc8a;font-weight:800;display:inline-flex;align-items:center;gap:6px}
+.sectors{display:flex;gap:8px;margin:12px 0;color:#95a3c9}
+.sectors div{flex:1;text-align:center;padding:8px;border-left:1px solid rgba(255,255,255,0.03)}
+.wagons{display:flex;gap:12px}
+.wagon{flex:1;border-radius:12px;padding:18px;border:2px solid rgba(255,255,255,0.04);position:relative;min-height:240px;display:flex;flex-direction:column}
+.wagon.first{background:linear-gradient(180deg,#3b2b08,#6f4b10);border-color:rgba(255,215,0,0.12)}
+.wagon.normal{background:linear-gradient(180deg,#053a8a,#062e72);border-color:rgba(0,87,255,0.12)}
+.wagon-number{width:64px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;margin:0 auto 8px}
+.wagon-number.first{background:var(--accent);color:#001a4d;box-shadow:0 0 10px rgba(255,235,122,0.2)}
+.wagon-number.normal{background:var(--blue1);color:#fff;box-shadow:0 0 10px rgba(51,153,255,0.12)}
+.wagon-class{font-family:"Jeju Gothic",sans-serif;text-align:center;font-weight:800;margin-bottom:6px}
+.wagon-sub{font-family:"JetBrains Mono",monospace;text-align:center;color:var(--muted);font-size:13px}
+.facilities{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:auto}
+.facility{background:var(--panel);padding:8px;border-radius:8px;display:flex;gap:8px;align-items:center;color:var(--muted)}
+.facility svg{width:20px;height:20px;flex-shrink:0}
+.wagon-svg{position:absolute;inset:0;opacity:0.06;pointer-events:none}
+.legend{padding:18px;border-top:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:center;background:linear-gradient(0deg, rgba(255,255,255,0.01), transparent)}
+.legend-item{display:flex;gap:8px;align-items:center;color:var(--muted)}
+.legend-item svg{width:20px;height:20px}
+@media (max-width:1000px){.wagons{flex-direction:column}.wagon{min-height:160px}}
+</style>
+</head>
+<body>
+<div class="container" role="application" aria-label="Treinsamenstelling">
+  <header class="header">
+    <div class="brand">
+      <!-- Train SVG icon -->
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M16 58h4l-2 4h28l-2-4h4c4 0 6-2 6-5V15C54 9 47 6 32 6S10 9 10 15v38c0 3 2 5 6 5zm0-43c0-5 7-8 16-8s16 3 16 8v28H16V15zm-2 31h36v3H14v-3zm7 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm22 0a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+      </svg>
+      <div class="title">
+        <h1>Wagonindeling / Composition / Wagenzusammenstellung</h1>
+        <p>Station Brussel-Centraal / Bruxelles-Central</p>
+      </div>
+    </div>
+    <div class="clock" id="clock">--:--</div>
+  </header>
+
+  <div class="info-bar">
+    <div class="info-left">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="tag small">IC 2417</div>
+        <div class="tag">{IC}</div>
+        <div style="color:var(--muted)">Vertrek: <strong style="color:#d8ecff;margin-left:6px">16:35</strong></div>
+        <div style="color:var(--muted)">Perron: <div class="platform" style="display:inline-block;margin-left:8px">5</div></div>
+      </div>
+    </div>
+    <div class="info-right">
+      <div class="dest">Luik / Liège</div>
+      <div class="via">via Leuven</div>
+    </div>
+  </div>
+
+  <main class="content">
+    <div class="composition">
+
+      <!-- Composition card for each train (static replication of dataset) -->
+      <section class="composition-card" aria-label="Train IC 2417 composition">
+        <div class="train-header">
+          <div class="train-left">
+            <div class="train-time">14:35</div>
+            <div class="train-meta">
+              <div style="display:flex;gap:10px;align-items:center;margin-left:8px">
+                <span class="train-type" style="background:linear-gradient(90deg,var(--blue1),var(--blue2));color:white">IC</span>
+                <span class="train-number">IC 2417</span>
+              </div>
+              <div class="train-dest"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5fb0ff" stroke-width="1.6"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Luik / Liège</span></div>
+              <div style="color:var(--muted);margin-left:26px">Liège / Luik</div>
+            </div>
+          </div>
+
+          <div class="train-right">
+            <div style="font-size:12px;color:var(--muted)">Spoor / Voie / Gleis</div>
+            <div class="platform">5</div>
+            <div class="sector">Sector B-E</div>
+            <div style="margin-top:8px" class="delay"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#ffb347" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94A2 2 0 0 0 22.18 18L13.71 3.86a2 2 0 0 0-3.42 0z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>+5 min</span></div>
+          </div>
+        </div>
+
+        <div class="sectors" aria-hidden="true">
+          <div>Sector A</div><div>Sector B</div><div>Sector C</div><div>Sector D</div><div>Sector E</div><div>Sector F</div>
+        </div>
+
+        <div class="wagons" role="list">
+          <!-- Wagon elements (static mapping) -->
+          <div class="wagon first" role="listitem" aria-label="Wagon 1 1e klas">
+            <div class="wagon-number first">1</div>
+            <div class="wagon-class">1e klas</div>
+            <div class="wagon-sub">1ère CL / 1. KL</div>
+            <div class="facilities">
+              <div class="facility" title="Stiltezone"> 
+                <!-- quiet icon -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M12 3v18M5 8v8M19 8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div style="font-size:12px;color:var(--muted);margin-left:6px">Stilte</div>
+              </div>
+              <div class="facility" title="Toegankelijk">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M18 2v6M6 22h12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div style="font-size:12px;color:var(--muted);margin-left:6px">Rolstoel</div>
+              </div>
+            </div>
+            <svg class="wagon-svg" viewBox="0 0 100 100"><rect x="10" y="20" width="80" height="60" rx="8" fill="currentColor"/><circle cx="25" cy="85" r="5" fill="currentColor"/><circle cx="75" cy="85" r="5" fill="currentColor"/></svg>
+          </div>
+
+          <div class="wagon first" role="listitem" aria-label="Wagon 2 1e klas">
+            <div class="wagon-number first">2</div>
+            <div class="wagon-class">1e klas</div>
+            <div class="wagon-sub">1ère CL / 1. KL</div>
+            <div class="facilities">
+              <div class="facility" title="Bar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M8 2h8v4a4 4 0 0 1-4 4H8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div style="font-size:12px;color:var(--muted);margin-left:6px">Bar</div>
+              </div>
+              <div class="facility" title="Toegankelijk">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M18 2v6M6 22h12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div style="font-size:12px;color:var(--muted);margin-left:6px">Rolstoel</div>
+              </div>
+            </div>
+            <svg class="wagon-svg" viewBox="0 0 100 100"><rect x="10" y="20" width="80" height="60" rx="8" fill="currentColor"/><circle cx="25" cy="85" r="5" fill="currentColor"/><circle cx="75" cy="85" r="5" fill="currentColor"/></svg>
+          </div>
+
+          <div class="wagon normal" role="listitem" aria-label="Wagon 3 2e klas">
+            <div class="wagon-number normal">3</div>
+            <div class="wagon-class">2e klas</div>
+            <div class="wagon-sub">2ème CL / 2. KL</div>
+            <div class="facilities">
+              <div class="facility" title="Rolstoel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M18 2v6M6 22h12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div style="font-size:12px;color:var(--muted);margin-left:6px">Rolstoel</div>
+              </div>
+            </div>
+            <svg class="wagon-svg" viewBox="0 0 100 100"><rect x="10" y="20" width="80" height="60" rx="8" fill="currentColor"/><circle cx="25" cy="85" r="5" fill="currentColor"/><circle cx="75" cy="85" r="5" fill="currentColor"/></svg>
+          </div>
+
+          <div class="wagon normal" role="listitem" aria-label="Wagon 4 2e klas">
+            <div class="wagon-number normal">4</div>
+            <div class="wagon-class">2e klas</div>
+            <div class="wagon-sub">2ème CL / 2. KL</div>
+            <div class="facilities">
+              <div class="facility" title="Familie">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M16 21v-2a4 4 0 0 0-4-4H8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div style="font-size:12px;color:var(--muted);margin-left:6px">Familie</div>
+              </div>
+              <div class="facility" title="Baby">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M12 2a4 4 0 0 0-4 4v6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div style="font-size:12px;color:var(--muted);margin-left:6px">Baby</div>
+              </div>
+            </div>
+            <svg class="wagon-svg" viewBox="0 0 100 100"><rect x="10" y="20" width="80" height="60" rx="8" fill="currentColor"/><circle cx="25" cy="85" r="5" fill="currentColor"/><circle cx="75" cy="85" r="5" fill="currentColor"/></svg>
+          </div>
+
+          <div class="wagon normal" role="listitem" aria-label="Wagon 5 2e klas">
+            <div class="wagon-number normal">5</div>
+            <div class="wagon-class">2e klas</div>
+            <div class="wagon-sub">2ème CL / 2. KL</div>
+            <div class="facilities"></div>
+            <svg class="wagon-svg" viewBox="0 0 100 100"><rect x="10" y="20" width="80" height="60" rx="8" fill="currentColor"/><circle cx="25" cy="85" r="5" fill="currentColor"/><circle cx="75" cy="85" r="5" fill="currentColor"/></svg>
+          </div>
+
+          <div class="wagon normal" role="listitem" aria-label="Wagon 6 2e klas">
+            <div class="wagon-number normal">6</div>
+            <div class="wagon-class">2e klas</div>
+            <div class="wagon-sub">2ème CL / 2. KL</div>
+            <div class="facilities">
+              <div class="facility" title="Fiets">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M5 17h6l3-8h2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div style="font-size:12px;color:var(--muted);margin-left:6px">Fiets</div>
+              </div>
+            </div>
+            <svg class="wagon-svg" viewBox="0 0 100 100"><rect x="10" y="20" width="80" height="60" rx="8" fill="currentColor"/><circle cx="25" cy="85" r="5" fill="currentColor"/><circle cx="75" cy="85" r="5" fill="currentColor"/></svg>
+          </div>
+
+          <div class="wagon normal" role="listitem" aria-label="Wagon 7 2e klas">
+            <div class="wagon-number normal">7</div>
+            <div class="wagon-class">2e klas</div>
+            <div class="wagon-sub">2ème CL / 2. KL</div>
+            <div class="facilities">
+              <div class="facility" title="Stilte">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M12 3v18M5 8v8M19 8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div style="font-size:12px;color:var(--muted);margin-left:6px">Stilte</div>
+              </div>
+            </div>
+            <svg class="wagon-svg" viewBox="0 0 100 100"><rect x="10" y="20" width="80" height="60" rx="8" fill="currentColor"/><circle cx="25" cy="85" r="5" fill="currentColor"/><circle cx="75" cy="85" r="5" fill="currentColor"/></svg>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Second train card (Thalys 9345) -->
+      <section class="composition-card" aria-label="Train Thalys 9345 composition">
+        <div class="train-header">
+          <div class="train-left">
+            <div class="train-time">14:31</div>
+            <div class="train-meta">
+              <div style="display:flex;gap:10px;align-items:center;margin-left:8px">
+                <span class="train-type" style="background:linear-gradient(90deg,#7b2fbf,#a14fe0);color:white">Thalys</span>
+                <span class="train-number">Thalys 9345</span>
+              </div>
+              <div class="train-dest"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5fb0ff" stroke-width="1.6"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Parijs-Zuid</span></div>
+              <div style="color:var(--muted);margin-left:26px">Paris-Midi</div>
+            </div>
+          </div>
+
+          <div class="train-right">
+            <div style="font-size:12px;color:var(--muted)">Spoor / Voie / Gleis</div>
+            <div class="platform">2</div>
+            <div class="sector">Sector C-D</div>
+            <div style="margin-top:8px" class="ontime"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7efc8a" stroke-width="1.6"><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Op tijd</span></div>
+          </div>
+        </div>
+
+        <div class="sectors" aria-hidden="true">
+          <div>Sector A</div><div>Sector B</div><div>Sector C</div><div>Sector D</div><div>Sector E</div><div>Sector F</div>
+        </div>
+
+        <div class="wagons" role="list">
+          <!-- Thalys wagons: mapping simplified -->
+          <div class="wagon first" role="listitem"><div class="wagon-number first">1</div><div class="wagon-class">1e klas</div><div class="wagon-sub">1ère CL / 1. KL</div>
+            <div class="facilities"><div class="facility" title="Stilte"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M12 3v18M5 8v8M19 8v8" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:12px;color:var(--muted);margin-left:6px">Stilte</div></div><div class="facility" title="Rolstoel"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M18 2v6M6 22h12" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:12px;color:var(--muted);margin-left:6px">Rolstoel</div></div></div>
+          </div>
+
+          <div class="wagon first" role="listitem"><div class="wagon-number first">2</div><div class="wagon-class">1e klas</div><div class="wagon-sub">1ère CL / 1. KL</div>
+            <div class="facilities"><div class="facility" title="Bar"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M8 2h8v4a4 4 0 0 1-4 4H8z" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:12px;color:var(--muted);margin-left:6px">Bar</div></div><div class="facility" title="Rolstoel"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M18 2v6M6 22h12" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:12px;color:var(--muted);margin-left:6px">Rolstoel</div></div></div>
+          </div>
+
+          <div class="wagon normal" role="listitem"><div class="wagon-number normal">3</div><div class="wagon-class">2e klas</div><div class="wagon-sub">2ème CL / 2. KL</div>
+            <div class="facilities"><div class="facility" title="Rolstoel"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M18 2v6M6 22h12" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:12px;color:var(--muted);margin-left:6px">Rolstoel</div></div></div>
+          </div>
+
+          <div class="wagon normal" role="listitem"><div class="wagon-number normal">4</div><div class="wagon-class">2e klas</div><div class="wagon-sub">2ème CL / 2. KL</div>
+            <div class="facilities"><div class="facility" title="Familie"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M16 21v-2a4 4 0 0 0-4-4H8" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:12px;color:var(--muted);margin-left:6px">Familie</div></div><div class="facility" title="Baby"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M12 2a4 4 0 0 0-4 4v6" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:12px;color:var(--muted);margin-left:6px">Baby</div></div></div>
+          </div>
+
+          <div class="wagon normal" role="listitem"><div class="wagon-number normal">5</div><div class="wagon-class">2e klas</div><div class="wagon-sub">2ème CL / 2. KL</div>
+            <div class="facilities"></div>
+          </div>
+
+          <div class="wagon normal" role="listitem"><div class="wagon-number normal">6</div><div class="wagon-class">2e klas</div><div class="wagon-sub">2ème CL / 2. KL</div>
+            <div class="facilities"><div class="facility" title="Fiets"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M5 17h6l3-8h2" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:12px;color:var(--muted);margin-left:6px">Fiets</div></div></div>
+          </div>
+
+          <div class="wagon normal" role="listitem"><div class="wagon-number normal">7</div><div class="wagon-class">2e klas</div><div class="wagon-sub">2ème CL / 2. KL</div>
+            <div class="facilities"><div class="facility" title="Stilte"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M12 3v18M5 8v8M19 8v8" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:12px;color:var(--muted);margin-left:6px">Stilte</div></div></div>
+          </div>
+
+          <div class="wagon normal" role="listitem"><div class="wagon-number normal">8</div><div class="wagon-class">2e klas</div><div class="wagon-sub">2ème CL / 2. KL</div></div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <div class="legend" role="contentinfo">
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M5 17h14M12 3v14" stroke-linecap="round" stroke-linejoin="round"/></svg><div>Fiets / Vélo</div></div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M18 2v6M6 22h12" stroke-linecap="round" stroke-linejoin="round"/></svg><div>Rolstoel / Fauteuil</div></div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M12 3v18M5 8v8M19 8v8" stroke-linecap="round" stroke-linejoin="round"/></svg><div>Stilte / Silence</div></div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M16 21v-2a4 4 0 0 0-4-4H8" stroke-linecap="round" stroke-linejoin="round"/></svg><div>Familie / Famille</div></div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M8 2h8v4a4 4 0 0 1-4 4H8z" stroke-linecap="round" stroke-linejoin="round"/></svg><div>Bar</div></div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#b6c7e8" stroke-width="1.6"><path d="M12 2a4 4 0 0 0-4 4v6" stroke-linecap="round" stroke-linejoin="round"/></svg><div>Baby</div></div>
+  </div>
+
+</div>
+
+<script>
+// Live clock (updates every second)
+function updateClock(){
+  const el = document.getElementById('clock');
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = hh+':'+mm;
+}
+setInterval(updateClock,1000);updateClock();
+</script>
+</body>
+</html>

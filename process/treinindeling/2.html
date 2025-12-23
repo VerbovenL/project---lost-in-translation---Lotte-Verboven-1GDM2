@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Wagonindeling – IC</title>
+<style>
+    body {
+        background: #001d4d;
+        margin: 0;
+        padding: 0;
+        font-family: "Jeju Gothic", sans-serif;
+        display: flex;
+        justify-content: center;
+    }
+
+    .container {
+        width: 1800px;
+        background: #001d4d;
+        border-radius: 20px;
+        border: 2px solid #0044c2;
+        overflow: hidden;
+        box-shadow: 0 0 35px rgba(0, 78, 255, 0.5), 0 0 80px rgba(0, 32, 255, 0.25);
+        margin: 40px 0;
+    }
+
+    .header {
+        background: #003590;
+        padding: 40px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .title {
+        color: #ffd300;
+        font-size: 2.6rem;
+        text-shadow: 0 0 8px rgba(255, 211, 0, 0.4);
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        color: #bfe0ff;
+        font-size: 1.5rem;
+        margin-top: -10px;
+    }
+
+    .clock {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #cde7ff;
+    }
+
+    .train-info {
+        background: #002366;
+        padding: 20px 60px;
+        border-bottom: 2px solid #0044c2;
+    }
+
+    .train-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .train-tag {
+        background: #0057ff;
+        padding: 10px 25px;
+        font-family: "JetBrains Mono", monospace;
+        color: white;
+        font-size: 1.9rem;
+        font-weight: 700;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #3399ff;
+    }
+
+    .platform {
+        background: #ffd300;
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "JetBrains Mono", monospace;
+        color: #001a4d;
+        font-size: 1.9rem;
+        font-weight: 700;
+        box-shadow: 0 0 10px #ffeb7a;
+    }
+
+    .wagons {
+        padding: 60px;
+    }
+
+    .direction-box {
+        background: #002b7a;
+        border: 2px solid #0057ff;
+        padding: 12px 25px;
+        border-radius: 10px;
+        color: #bcd4ff;
+        font-size: 1.3rem;
+        width: fit-content;
+        margin-left: auto;
+    }
+
+    .wagon-list {
+        margin-top: 40px;
+        display: flex;
+        gap: 16px;
+    }
+
+    .wagon {
+        flex: 1;
+        min-height: 260px;
+        border-radius: 14px;
+        padding: 25px;
+        border: 2px solid;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .wagon-number {
+        width: 65px;
+        height: 65px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 auto 10px auto;
+    }
+
+    .facility {
+        background: #001d4d;
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    .facility-row {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: auto;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <div class="title">WAGONINDELING / COMPOSITION / WAGENREIHUNG</div>
+            <div class="subtitle">Brussel-Centraal / Bruxelles-Central</div>
+        </div>
+
+        <div class="clock">16:48</div>
+    </div>
+
+    <!-- TRAIN INFO BAR -->
+    <div class="train-info">
+        <div class="train-row">
+            <div style="display:flex; gap:40px; align-items:center;">
+                <div>
+                    <span style="color:#bcd4ff; font-size:1.1rem;">Trein / Train / Zug:</span>
+                    <span class="train-tag">IC 1832</span>
+                </div>
+
+                <div>
+                    <span style="color:#bcd4ff; font-size:1.1rem;">Vertrek / Départ:</span>
+                    <span style="font-family:'JetBrains Mono'; font-size:1.9rem; color:#d8ecff;">16:48</span>
+                </div>
+
+                <div>
+                    <span style="color:#bcd4ff; font-size:1.1rem;">Perron / Voie:</span>
+                    <span class="platform">4</span>
+                </div>
+            </div>
+
+            <div style="text-align:right;">
+                <div style="color:#ffe45a; font-size:1.4rem;">Oostende / Ostende</div>
+                <div style="color:#b6c7e8; font-family:'JetBrains Mono';">via Gent-Sint-Pieters, Brugge</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WAGON SECTION -->
+    <div class="wagons">
+
+        <div class="direction-box">← Richting / Direction / Richtung: Oostende</div>
+
+        <div class="wagon-list">
+
+            <!-- WAGON 1 -->
+            <div class="wagon" style="background:#002b7a; border-color:#0057ff;">
+                <div class="wagon-number" style="background:#0057ff; color:white;">1</div>
+                <div style="text-align:center; color:#bcd4ff; font-size:1.5rem;">2e KLAS</div>
+                <div style="text-align:center; color:#b6c7e8; font-family:'JetBrains Mono';">2ème CL / 2. KL</div>
+
+                <div class="facility-row">
+                    <div class="facility">📶</div>
+                    <div class="facility">🔌</div>
+                    <div class="facility">♿</div>
+                    <div class="facility">🚲</div>
+                </div>
+            </div>
+
+            <!-- WAGON 2 -->
+            <div class="wagon" style="background:#002b7a; border-color:#0057ff;">
+                <div class="wagon-number" style="background:#0057ff; color:white;">2</div>
+                <div style="text-align:center; color:#bcd4ff; font-size:1.5rem;">2e KLAS</div>
+                <div style="text-align:center; color:#b6c7e8; font-family:'JetBrains Mono';">2ème CL / 2. KL</div>
+
+                <div class="facility-row">
+                    <div class="facility">📶</div>
+                    <div class="facility">🔌</div>
+                    <div class="facility">👶</div>
+                </div>
+            </div>
+
+            <!-- WAGON 3 -->
+            <div class="wagon" style="background:#002b7a; border-color:#0057ff;">
+                <div class="wagon-number" style="background:#0057ff; color:white;">3</div>
+                <div style="text-align:center; color:#bcd4ff; font-size:1.5rem;">2e KLAS</div>
+                <div style="text-align:center; color:#b6c7e8; font-family:'JetBrains Mono';">2ème CL / 2. KL</div>
+
+                <div class="facility-row">
+                    <div class="facility">📶</div>
+                    <div class="facility">🔌</div>
+                    <div class="facility">🔇</div>
+                </div>
+            </div>
+
+            <!-- WAGON 4 (1e klas) -->
+            <div class="wagon" style="background:#003d9e; border-color:#ffd300;">
+                <div class="wagon-number" style="background:#ffd300; color:#001a4d;">4</div>
+                <div style="text-align:center; color:#ffd300; font-size:1.5rem;">1e KLAS</div>
+                <div style="text-align:center; color:#b6c7e8; font-family:'JetBrains Mono';">1ère CL / 1. KL</div>
+
+                <div class="facility-row">
+                    <div class="facility">📶</div>
+                    <div class="facility">🔌</div>
+                    <div class="facility">🔇</div>
+                </div>
+            </div>
+
+            <!-- WAGON 5 -->
+            <div class="wagon" style="background:#002b7a; border-color:#0057ff;">
+                <div class="wagon-number" style="background:#0057ff; color:white;">5</div>
+                <div style="text-align:center; color:#bcd4ff; font-size:1.5rem;">2e KLAS</div>
+                <div style="text-align:center; color:#b6c7e8; font-family:'JetBrains Mono';">2ème CL / 2. KL</div>
+
+                <div class="facility-row">
+                    <div class="facility">📶</div>
+                    <div class="facility">🔌</div>
+                    <div class="facility">☕</div>
+                </div>
+            </div>
+
+            <!-- WAGON 6 -->
+            <div class="wagon" style="background:#002b7a; border-color:#0057ff;">
+                <div class="wagon-number" style="background:#0057ff; color:white;">6</div>
+                <div style="text-align:center; color:#bcd4ff; font-size:1.5rem;">2e KLAS</div>
+                <div style="text-align:center; color:#b6c7e8; font-family:'JetBrains Mono';">2ème CL / 2. KL</div>
+
+                <div class="facility-row">
+                    <div class="facility">📶</div>
+                    <div class="facility">🔌</div>
+                </div>
+            </div>
+
+            <!-- WAGON 7 -->
+            <div class="wagon" style="background:#002b7a; border-color:#0057ff;">
+                <div class="wagon-number" style="background:#0057ff; color:white;">7</div>
+                <div style="text-align:center; color:#bcd4ff; font-size:1.5rem;">2e KLAS</div>
+                <div style="text-align:center; color:#b6c7e8; font-family:'JetBrains Mono';">2ème CL / 2. KL</div>
+
+                <div class="facility-row">
+                    <div class="facility">📶</div>
+                    <div class="facility">🔌</div>
+                    <div class="facility">♿</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+

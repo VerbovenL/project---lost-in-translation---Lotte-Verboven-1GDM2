@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="nl" class="bg-[#00112e] text-white">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototyping Proces - 12 Weken Overzicht | Perron Stijl</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Kleuren overgenomen van de Perron 3 code */
+        :root {
+            --bg-main: #001d4d;
+            --bg-panel: #002366;
+            --bg-panel-alt: #002b7a;
+            --blue-light: #bcd4ff;
+            --yellow: #ffd300;
+            --orange: #ff9100;
+            --red: #ff4040;
+            --green: #00cc66;
+        }
+
+        body {
+            /* Gebruik JetBrains Mono voor de gehele site */
+            font-family: "JetBrains Mono", monospace;
+            background: #00112e;
+            color: white;
+            margin: 0;
+        }
+
+        /* Vangt de oude .board op, dient als hoofdcontainer */
+        #proces-wrapper {
+            width: 90%;
+            max-width: 900px;
+            background: var(--bg-main);
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0,60,255,0.3);
+            padding: 1.5rem 2rem 3rem;
+            border: 1px solid #003f9e;
+            margin: 40px auto; /* Centreer op de pagina */
+        }
+
+        /* Header (gebaseerd op het 'Perron / Voie' blok) */
+        header {
+            text-align: left;
+            border-bottom: 2px solid #003d95;
+            padding-bottom: 0.75rem;
+            margin-bottom: 2rem;
+            color: white;
+            background: transparent; /* Zorgen dat het de body kleur pakt */
+        }
+
+        header h1 {
+            /* Gebruik Jeju Gothic en de gele kleur */
+            font-family: "Jeju Gothic", sans-serif;
+            font-size: 1.8rem;
+            color: var(--yellow);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        header p {
+            font-size: 1rem;
+            color: var(--blue-light);
+            margin-top: 0.5rem;
+            text-transform: capitalize;
+        }
+
+        /* Navigatie Menu (geen sticky meer, maar strakke lijst) */
+        #nav-menu {
+            background-color: var(--bg-panel);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #nav-menu a {
+            text-decoration: none;
+            color: var(--yellow);
+            background: var(--bg-panel-alt);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: background-color 0.2s, color 0.2s;
+            border: 1px solid #003d95;
+        }
+
+        #nav-menu a:hover {
+            background-color: #0057ff; /* De blauwe trein-type kleur */
+            color: white;
+        }
+
+        /* Proces Container en Week Kaarten */
+        #proces-container {
+            padding: 0;
+        }
+
+        .week-card {
+            background-color: var(--bg-panel);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            box-shadow: inset 0 0 8px rgba(0,0,60,0.6);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Titels (gebaseerd op de dest-yellow in de main-train) */
+        .week-card h2 {
+            font-family: "Jeju Gothic", sans-serif;
+            font-size: 1.4rem;
+            color: var(--yellow);
+            border-bottom: 1px solid #003d95;
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        /* Inhoud Lijst */
+        .content-placeholder {
+            padding-top: 5px;
+            font-size: 0.95rem;
+        }
+
+        .content-placeholder p {
+            color: var(--blue-light);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .content-placeholder ul {
+            list-style: none;
+            padding-left: 0;
+            margin-left: 0;
+        }
+
+        .content-placeholder li {
+            background: var(--bg-panel-alt);
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            border-left: 3px solid var(--green); /* Groene status kleur als accent */
+        }
+        
+        .content-placeholder strong {
+            color: var(--yellow); /* Maak de focuspunten geel */
+            font-weight: bold;
+        }
+
+        /* De Gemarkeerde (Actieve) Week */
+        .week-card:target {
+            border: 2px solid var(--yellow);
+            box-shadow: 0 0 15px rgba(255, 211, 0, 0.5); /* Gele gloed bij focus */
+            background-color: #002b7a; /* Iets donkerder paneel om te markeren */
+        }
+
+        /* Footer */
+        footer {
+            background: transparent;
+            color: #88aadd;
+            text-align: center;
+            padding: 15px 0 0;
+            font-size: 0.8em;
+        }
+
+        /* Media Query voor kleinere schermen */
+        @media (max-width: 600px) {
+            #proces-wrapper {
+                padding: 1rem 1rem 2rem;
+            }
+            header h1 {
+                font-size: 1.5rem;
+            }
+            .week-card h2 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="proces-wrapper">
+    <header>
+        <h1>PROTOTYPING BORD | WEEK CYCLUS</h1>
+        <p>Projectstatus Brussel-Centraal Stijl</p>
+    </header>
+
+    <nav id="nav-menu">
+        </nav>
+
+    <main id="proces-container">
+        </main>
+
+    <footer>
+        <p>&copy; 2025 Prototyping Project | Jouw Naam</p>
+    </footer>
+
+    <script>
+        // JavaScript om de 12 weken en de navigatie te genereren
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('proces-container');
+            const navMenu = document.getElementById('nav-menu');
+            
+            // De 12 ingevulde fasen
+            const fasen = [
+                { naam: "Onderzoek & Probleemdefinitie", focus: "Wat is de uitdaging? Wie is de doelgroep? (Week 1)" },
+                { naam: "Ideatie & Brainstorming", focus: "Genereren van veel mogelijke oplossingen. (Week 2)" },
+                { naam: "Conceptontwikkeling", focus: "Kiezen van de beste ideeën en verfijnen. (Week 3)" },
+                { naam: "Lage-Fidelity Prototyping", focus: "Maken van schetsen en paper prototypes. (Week 4)" },
+                { naam: "Gebruikerstests (Low-Fi)", focus: "Vroege feedback verzamelen op de basisstructuur. (Week 5)" },
+                { naam: "Analyse & Iteratie 1", focus: "Verwerken van feedback en aanpassen van het concept. (Week 6)" },
+                { naam: "Midden-Fidelity Prototyping", focus: "Maken van klikbare wireframes. (Week 7)" },
+                { naam: "Visueel Ontwerp & Branding", focus: "Toepassen van stijlgids, kleuren en lettertypes. (Week 8)" },
+                { naam: "Hoge-Fidelity Prototyping", focus: "Definitieve, visueel complete versie maken. (Week 9)" },
+                { naam: "Gebruikerstests (High-Fi)", focus: "Uitgebreide tests op de finale functionaliteit en esthetiek. (Week 10)" },
+                { naam: "Definitieve Oplevering & Documentatie", focus: "Finaliseren van de code/presentatie en verslaglegging. (Week 11)" },
+                { naam: "Reflectie & Presentatie", focus: "Evalueren van het proces en voorbereiden van de pitch. (Week 12)" }
+            ];
+
+            fasen.forEach((fase, index) => {
+                const i = index + 1;
+
+                // 1. Maak de Navigatie Link
+                const navLink = document.createElement('a');
+                navLink.href = `#week-${i}`;
+                navLink.textContent = `W${i} - ${fase.naam.split(' ')[0]}`; // Toon W# en eerste woord van fase
+                navMenu.appendChild(navLink);
+
+                // 2. Maak de Week Sectie
+                const weekSection = document.createElement('section');
+                weekSection.id = `week-${i}`;
+                weekSection.classList.add('week-card');
+
+                // Titel met fase
+                const weekTitle = document.createElement('h2');
+                weekTitle.innerHTML = `> WEEK ${i}: ${fase.naam}`;
+                
+                // Content Placeholder
+                const contentPlaceholder = document.createElement('div');
+                contentPlaceholder.classList.add('content-placeholder');
+                contentPlaceholder.innerHTML = `
+                    <p>Fase Focus: <strong class="text-white">${fase.focus}</strong></p>
+                    <ul>
+                        <li><strong>DOEL:</strong> Vul hier het specifieke doel van deze week in.</li>
+                        <li><strong>ACTIVITEITEN:</strong> Beschrijf de concrete taken voor deze periode.</li>
+                        <li><strong>RESULTAAT:</strong> Voeg hier de link/status van de deliverable toe.</li>
+                    </ul>
+                `;
+
+                weekSection.appendChild(weekTitle);
+                weekSection.appendChild(contentPlaceholder);
+                container.appendChild(weekSection);
+            });
+        });
+    </script>
+
+</div>
+
+</body>
+</html>

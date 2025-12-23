@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="nl" class="bg-[#001540] text-white">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vertrekbord - Brussel-Centraal</title>
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      /* Fonts */
+      h1, h2, h3 {
+        font-family: "Jeju Gothic", sans-serif;
+      }
+      body, p, div, span {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* Glow effecten */
+      .glow-yellow { text-shadow: 0 0 6px #ffea80, 0 0 10px #ffe65a; }
+      .glow-blue { text-shadow: 0 0 8px #5da0ff, 0 0 12px #2a7bff; }
+      .glow-red { text-shadow: 0 0 8px #ff6b6b, 0 0 12px #ff0000; }
+
+      /* Lay-out bord */
+      .board {
+        width: 940px;
+        background: #0026a3;
+        border-radius: 16px;
+        box-shadow: 0 0 20px #003bff;
+        overflow: hidden;
+        border: 1px solid #0041c2;
+      }
+
+      /* Header */
+      .board-header {
+        background: #001c66;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      #clock {
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: #bfe0ff;
+        text-shadow: 0 0 10px #3ba7ff;
+      }
+
+      /* Kolomtitels */
+      .header-grid {
+        display: grid;
+        grid-template-columns: 110px 1fr 110px 130px 100px;
+        background-color: #0035b5;
+        color: #bcd4ff;
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 0.78rem;
+        padding: 0.65rem 2rem;
+        border-bottom: 1px solid #0041c2;
+      }
+
+      .header-grid h3:nth-child(1) { text-align: left; }
+      .header-grid h3:nth-child(2) { text-align: left; padding-left: 0.5rem; }
+      .header-grid h3:nth-child(3),
+      .header-grid h3:nth-child(4),
+      .header-grid h3:nth-child(5) { text-align: center; }
+
+      /* Rijen */
+      .row {
+        display: grid;
+        grid-template-columns: 110px 1fr 110px 130px 100px;
+        align-items: center;
+        border-top: 1px solid #0041c2;
+        background: #0026a3;
+        padding: 1rem 2rem;
+      }
+
+      .row.cancelled { background: #3b2a70; }
+
+      .time-col {
+        color: #bfe0ff;
+        font-size: 1.05rem;
+      }
+
+      .dest h2 {
+        color: #ffd77a;
+        font-size: 1.05rem;
+        margin: 0;
+      }
+
+      .dest p {
+        color: #cbd6e8;
+        font-size: 0.9rem;
+        margin: 0;
+      }
+
+      /* Boxen */
+      .square-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 2.8rem;
+        width: 2.8rem;
+        border-radius: 0.35rem;
+        font-weight: 700;
+        text-align: center;
+        font-size: 1.3rem;
+        margin: 0 auto;
+      }
+
+      .perron-box {
+        background: #ffd300;
+        color: #001c66;
+        box-shadow: 0 0 10px #ffea80;
+      }
+
+      .train-type {
+        background: #003b91;
+        color: white;
+        box-shadow: 0 0 10px #0099ff;
+      }
+
+      .info-cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
+        padding-left: 1rem;
+      }
+
+      .cancelled .dest h2 {
+        text-decoration: line-through;
+        opacity: 0.65;
+      }
+
+      .cancelled .info-cell {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .cancelled .cancel-symbol {
+        font-size: 1.4rem;
+        margin-bottom: 0.15rem;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex items-center justify-center p-10">
+    <div class="board">
+      <!-- Header -->
+      <div class="board-header">
+        <div class="flex items-center gap-4">
+          <div class="rounded-full bg-white text-[#001c66] w-11 h-11 flex items-center justify-center text-xl font-bold shadow-[0_0_12px_#ffffff]">
+            🚆
+          </div>
+          <div>
+            <h1 class="glow-yellow">VERTREK / DÉPART / ABFAHRT</h1>
+            <h3 class="glow-blue">Brussel-Centraal / Bruxelles-Central</h3>
+          </div>
+        </div>
+        <div id="clock" class="glow-blue">🕒 16:30:00</div>
+      </div>
+
+      <!-- Kolomtitels -->
+      <div class="header-grid">
+        <h3>Tijd / Heure / Zeit</h3>
+        <h3>Bestemming / Destination / Ziel</h3>
+        <h3>Perron / Voie / Gleis</h3>
+        <h3>Trein / Train / Zug</h3>
+        <h3>Info</h3>
+      </div>
+
+      <!-- Rijen -->
+      <div class="row">
+        <div class="time-col">16:32</div>
+        <div class="dest">
+          <h2 class="glow-yellow">Antwerpen-Centraal</h2>
+          <p>Anvers-Central / via Mechelen</p>
+        </div>
+        <div><div class="square-box perron-box">3</div></div>
+        <div><div class="square-box train-type">IC</div></div>
+        <div class="info-cell"></div>
+      </div>
+
+      <div class="row">
+        <div class="time-col">16:34</div>
+        <div class="dest">
+          <h2 class="glow-yellow">Luik-Guillemins</h2>
+          <p>Liège-Guillemins / via Leuven</p>
+        </div>
+        <div><div class="square-box perron-box">7</div></div>
+        <div><div class="square-box train-type">IC</div></div>
+        <div class="info-cell text-orange-300 font-bold">+5 min</div>
+      </div>
+
+      <div class="row">
+        <div class="time-col">16:39</div>
+        <div class="dest">
+          <h2 class="glow-yellow">Gent-Sint-Pieters</h2>
+          <p>Gand-Saint-Pierre / via Dendermonde</p>
+        </div>
+        <div><div class="square-box perron-box">2</div></div>
+        <div><div class="square-box train-type">P</div></div>
+        <div class="info-cell"></div>
+      </div>
+
+      <div class="row cancelled">
+        <div class="time-col">16:41</div>
+        <div class="dest">
+          <h2 class="glow-yellow">Charleroi-Sud</h2>
+          <p>Charleroi-Sud / via Nivelles</p>
+        </div>
+        <div><div class="square-box perron-box">5</div></div>
+        <div><div class="square-box train-type">S</div></div>
+        <div class="info-cell text-red-400 font-bold">
+          <span class="cancel-symbol">⚠</span>
+          GEANNULEERD
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="time-col">16:48</div>
+        <div class="dest">
+          <h2 class="glow-yellow">Oostende</h2>
+          <p>Ostende / via Brugge</p>
+        </div>
+        <div><div class="square-box perron-box">4</div></div>
+        <div><div class="square-box train-type">P</div></div>
+        <div class="info-cell text-orange-300 font-bold">+13 min</div>
+      </div>
+
+      <div class="row">
+        <div class="time-col">16:53</div>
+        <div class="dest">
+          <h2 class="glow-yellow">Namen</h2>
+          <p>Namur / via Ottignies</p>
+        </div>
+        <div><div class="square-box perron-box">6</div></div>
+        <div><div class="square-box train-type">IC</div></div>
+        <div class="info-cell"></div>
+      </div>
+    </div>
+
+    <!-- Simulatieklok -->
+    <script>
+      (function(){
+        const clockEl = document.getElementById('clock');
+        const startSeconds = 16 * 3600 + 30 * 60; // 16:30:00
+        const endSeconds = 16 * 3600 + 59 * 60 + 59; // 16:59:59
+        let current = startSeconds;
+
+        setInterval(() => {
+          const hours = Math.floor(current / 3600);
+          const minutes = Math.floor((current % 3600) / 60);
+          const seconds = current % 60;
+
+          const formatted =
+            String(hours).padStart(2, '0') + ':' +
+            String(minutes).padStart(2, '0') + ':' +
+            String(seconds).padStart(2, '0');
+
+          clockEl.textContent = "🕒 " + formatted;
+
+          current++;
+          if (current > endSeconds) current = startSeconds;
+        }, 1000);
+      })();
+    </script>
+  </body>
+</html>

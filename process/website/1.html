@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototyping Proces - 12 Weken Overzicht | Lost in Translation</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS voor de Lost in Translation stijl met Blauw en Geel */
+
+        /* Globale Stijl: Kalmte en Minimalisme met het Japanse lettertype */
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif; /* Japans Station Font */
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* Zeer lichtgrijze achtergrond */
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        /* Header: Strak en Blauw */
+        header {
+            background-color: #0056b3; /* Diepblauw */
+            color: #ffffff;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin-bottom: 5px;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-style: normal;
+            color: #cccccc;
+        }
+
+        /* Navigatie: De Gele Lijn (Sticky) */
+        #nav-menu {
+            position: sticky;
+            top: 0;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            text-align: center;
+            z-index: 1000;
+            border-bottom: 4px solid #ffc107; /* Helder Geel */
+        }
+
+        #nav-menu a {
+            text-decoration: none;
+            color: #555555;
+            padding: 10px 18px;
+            margin: 0 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Blauwe Interactie bij hover */
+        #nav-menu a:hover {
+            color: #ffffff;
+            background-color: #0056b3; /* Diepblauw bij hover */
+            box-shadow: 0 0 8px rgba(0, 86, 179, 0.4); 
+        }
+
+        /* Proces Container en Week Kaarten */
+        #proces-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .week-card {
+            background-color: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+            padding: 30px;
+            border-left: 5px solid #ffc107; /* Geel accent */
+            transition: border-left 0.3s;
+        }
+
+        .week-card:hover {
+            border-left: 5px solid #0056b3; /* Verander naar blauw bij hover */
+        }
+
+        /* Titels */
+        .week-card h2 {
+            color: #0056b3; /* Blauwe titeltekst */
+            font-size: 1.8em;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 15px;
+            margin-top: 0;
+            text-align: left;
+        }
+
+        /* Inhoud Lijst */
+        .content-placeholder {
+            padding-top: 10px;
+        }
+
+        .content-placeholder ul {
+            list-style-type: '— '; /* Japans aandoend streepje */
+            margin-left: 0;
+            padding-left: 20px;
+        }
+        
+        .content-placeholder strong {
+            font-weight: 700; /* Zorgt voor een strakke look in de lijst */
+        }
+
+        /* De Gemarkeerde (Actieve) Week */
+        .week-card:target {
+            background-color: #fffbe6; /* Zeer lichte gele tint om de focus te markeren */
+            border-top: 1px solid #ffc107;
+            border-right: 1px solid #ffc107;
+            border-bottom: 1px solid #ffc107;
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.3); /* Gele gloed bij focus */
+        }
+
+        /* Footer: Afsluiting in Blauw */
+        footer {
+            background-color: #0056b3;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px;
+            margin-top: 60px;
+            font-size: 0.8em;
+        }
+
+        /* Media Query voor kleinere schermen */
+        @media (max-width: 768px) {
+            #nav-menu {
+                overflow-x: auto;
+                white-space: nowrap;
+                justify-content: flex-start;
+            }
+            #nav-menu a {
+                font-size: 0.9em;
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>プロトタイピング | Prototyping Proces</h1>
+        <p>Een 12-Weken Cyclusschema | Blauw/Geel Esthetiek</p>
+    </header>
+
+    <nav id="nav-menu">
+        </nav>
+
+    <main id="proces-container">
+        </main>
+
+    <footer>
+        <p>&copy; 2025 Prototyping Project | Jouw Naam</p>
+    </footer>
+
+    <script>
+        // JavaScript om de 12 weken en de navigatie te genereren
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('proces-container');
+            const navMenu = document.getElementById('nav-menu');
+            
+            // De 12 ingevulde fasen
+            const fasen = [
+                { naam: "Onderzoek & Probleemdefinitie", focus: "Wat is de uitdaging? Wie is de doelgroep? (Week 1)" },
+                { naam: "Ideatie & Brainstorming", focus: "Genereren van veel mogelijke oplossingen. (Week 2)" },
+                { naam: "Conceptontwikkeling", focus: "Kiezen van de beste ideeën en verfijnen. (Week 3)" },
+                { naam: "Lage-Fidelity Prototyping", focus: "Maken van schetsen en paper prototypes. (Week 4)" },
+                { naam: "Gebruikerstests (Low-Fi)", focus: "Vroege feedback verzamelen op de basisstructuur. (Week 5)" },
+                { naam: "Analyse & Iteratie 1", focus: "Verwerken van feedback en aanpassen van het concept. (Week 6)" },
+                { naam: "Midden-Fidelity Prototyping", focus: "Maken van klikbare wireframes (bijv. in Figma/Adobe XD). (Week 7)" },
+                { naam: "Visueel Ontwerp & Branding", focus: "Toepassen van stijlgids, kleuren en lettertypes. (Week 8)" },
+                { naam: "Hoge-Fidelity Prototyping", focus: "Definitieve, visueel complete versie maken. (Week 9)" },
+                { naam: "Gebruikerstests (High-Fi)", focus: "Uitgebreide tests op de finale functionaliteit en esthetiek. (Week 10)" },
+                { naam: "Definitieve Oplevering & Documentatie", focus: "Finaliseren van de code/presentatie en verslaglegging. (Week 11)" },
+                { naam: "Reflectie & Presentatie", focus: "Evalueren van het proces en voorbereiden van de pitch. (Week 12)" }
+            ];
+
+            fasen.forEach((fase, index) => {
+                const i = index + 1;
+
+                // 1. Maak de Navigatie Link
+                const navLink = document.createElement('a');
+                navLink.href = `#week-${i}`;
+                navLink.textContent = `W${i}`;
+                navMenu.appendChild(navLink);
+
+                // 2. Maak de Week Sectie
+                const weekSection = document.createElement('section');
+                weekSection.id = `week-${i}`;
+                weekSection.classList.add('week-card');
+
+                // Titel met fase
+                const weekTitle = document.createElement('h2');
+                weekTitle.innerHTML = `🗓️ Week ${i}: ${fase.naam}`;
+                
+                // Content Placeholder
+                const contentPlaceholder = document.createElement('div');
+                contentPlaceholder.classList.add('content-placeholder');
+                contentPlaceholder.innerHTML = `
+                    <p><strong>Fase Focus:</strong> ${fase.focus}</p>
+                    <ul>
+                        <li><strong>Hoofddoel:</strong> Vul hier het specifieke doel van deze week in voor jouw project.</li>
+                        <li><strong>Activiteiten:</strong> Beschrijf de concrete taken (bijv. 5 gebruikersinterviews plannen, de database structuur opzetten).</li>
+                        <li><strong>Deliverable:</strong> Voeg de link toe naar het resultaat (bijv. Een link naar de gepresenteerde wireframes of een screenshot van de prototype-status).</li>
+                    </ul>
+                `;
+
+                weekSection.appendChild(weekTitle);
+                weekSection.appendChild(contentPlaceholder);
+                container.appendChild(weekSection);
+            });
+        });
+    </script>
+
+</body>
+</html>

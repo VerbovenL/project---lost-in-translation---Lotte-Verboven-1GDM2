@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekproces - Lost In Translation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #000611;
+            --bg-card-solid: #001d4d; 
+            --bg-modal-glass: rgba(0, 29, 77, 0.7); 
+            --rail-blue: #0057ff;
+            --yellow-neon: #ffd300;
+            --white: #ffffff;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--white);
+            font-family: var(--font-mono);
+            margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+            overflow-x: hidden; min-height: 100vh;
+        }
+
+        /* --- NEON SPOOR ACHTERGROND --- */
+        .background-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+            background: radial-gradient(circle at center, #001d4d 0%, #000611 100%);
+        }
+
+        .rails {
+            position: absolute; bottom: 0; left: 50%; width: 200%; height: 100%;
+            background: linear-gradient(90deg, transparent 48%, var(--rail-blue) 49%, var(--rail-blue) 51%, transparent 52%);
+            background-size: 80px 100%;
+            transform: perspective(400px) rotateX(60deg) translateX(-50%);
+            opacity: 0.3; animation: railMove 2s linear infinite;
+        }
+
+        @keyframes railMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 80px; }
+        }
+
+        .speed-line {
+            position: absolute; width: 2px; height: 100px;
+            background: linear-gradient(to bottom, transparent, var(--yellow-neon));
+            opacity: 0.2; animation: speedFall linear infinite;
+        }
+
+        @keyframes speedFall {
+            0% { transform: translateY(-110vh) translateX(0); }
+            100% { transform: translateY(110vh) translateX(200px); }
+        }
+
+        /* --- OVERZICHT KAARTJES --- */
+        header {
+            text-align: center; margin-bottom: 50px; border-bottom: 2px solid var(--yellow-neon);
+            padding-bottom: 15px; width: 100%; max-width: 900px; position: relative; z-index: 1;
+        }
+
+        header h1 {
+            font-family: 'Jeju Gothic', sans-serif; color: var(--yellow-neon);
+            margin: 0; letter-spacing: 4px; text-shadow: 0 0 15px rgba(255, 211, 0, 0.6);
+        }
+
+        .timeline {
+            max-width: 1000px; width: 100%; display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px;
+            position: relative; z-index: 1;
+        }
+
+        .week-card {
+            background: var(--bg-card-solid);
+            border: 1px solid var(--rail-blue);
+            padding: 25px; cursor: pointer; transition: 0.4s;
+            display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 140px; box-shadow: 0 0 15px rgba(0, 87, 255, 0.2);
+        }
+
+        .week-card:hover {
+            border-color: var(--yellow-neon);
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(0, 87, 255, 0.3);
+            box-shadow: 0 0 25px rgba(255, 211, 0, 0.3);
+        }
+
+        .week-number { color: var(--yellow-neon); font-weight: bold; font-size: 1.3rem; }
+        .week-title { font-size: 0.8rem; margin-top: 8px; color: var(--white); opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; line-height: 1.4; }
+
+        /* --- MODAL (TRANSPARANT) --- */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 6, 17, 0.7); 
+            z-index: 1000; justify-content: center; align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: var(--bg-modal-glass);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--yellow-neon);
+            max-width: 750px; width: 90%; padding: 40px; position: relative;
+            box-shadow: 0 0 50px rgba(0, 87, 255, 0.4);
+            max-height: 80vh; overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute; top: 15px; right: 20px;
+            color: var(--yellow-neon); font-size: 2.5rem; cursor: pointer;
+        }
+
+        #modalTitle { color: var(--yellow-neon); margin-top: 0; border-bottom: 2px solid var(--rail-blue); padding-bottom: 15px; font-family: 'Jeju Gothic', sans-serif; }
+        #modalText { line-height: 1.7; font-size: 1.05rem; }
+        .highlight { color: var(--yellow-neon); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="background-animation">
+        <div class="rails"></div>
+    </div>
+
+    <header>
+        <h1>PROCESS LOG: LOST IN TRANSLATION</h1>
+        <p>12 Weken Prototyping - Lotte</p>
+    </header>
+
+    <div class="timeline" id="timeline"></div>
+
+    <div class="modal" id="weekModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="modalText"></div>
+        </div>
+    </div>
+
+    <script>
+        const bg = document.querySelector('.background-animation');
+        for(let i=0; i<15; i++) {
+            let line = document.createElement('div');
+            line.className = 'speed-line';
+            line.style.left = Math.random() * 100 + "vw";
+            line.style.animationDuration = (Math.random() * 1 + 0.5) + "s";
+            line.style.animationDelay = Math.random() * 2 + "s";
+            bg.appendChild(line);
+        }
+
+        const procesData = [
+            { week: 1, titel: "Concept en Introductie", tekst: "Ik deed onderzoek naar treinborden en de verschillende doelgroepen. Ik stelde me de volgende vragen:<br>• Welke doelgroepen zijn er? → de forens met haast en de anderstalige reiziger.<br>• Wat zoeken mensen eerst op een treinbord?<br>• Wat is er belangrijk en waar moet ik rekening mee houden?<br>• Hoe wil ik mijn borden indelen?<br>• Hoe ga ik dit aanpakken?" },
+            { week: 2, titel: "Low-Fi Prototypes", tekst: "Nu ging ik alle verzamelde informatie met potlood en papier visueel maken door een low-fi prototype te schetsen. Ik tekende de drie schermen op papier om een logische lay-out en hiërarchie te vinden die voor mij en de doelgroep het beste paste. Ik schepste steeds meerdere varianten en koos daar de beste uit." },
+            { week: 3, titel: "Typografie, Kleur en Stijlen", tekst: "In week drie ging ik nadenken over de esthetiek en stijl die ik in mijn borden wilde brengen. Ik koos voor minimalistisch, strak en technisch, geïnspireerd door de Japanse digitale borden en de cinematische sfeer van de opdracht-titel. Ik deed wat opzoekwerk en koos mijn kleuren en lettertypes: diep donkerblauw voor de achtergrond en neongeel voor het sterke contrast, en de fonts <span class='highlight'>Jeju Gothic</span> en <span class='highlight'>JetBrains Mono</span> voor de digitale en strakke uitstraling. Ik begon met mijn midi-prototype borden uit te werken in Figma." },
+            { week: 4, titel: "Secties, Frames en Grids", tekst: "Ik maakte gebruik van een rij-component, zodat ik de basis van tijd, bestemming, perron, trein en info makkelijk en nauwkeurig kon hergebruiken. Ik maakte gebruik van secties en strakke lijnen voor een duidelijk en strak zicht. Ook frames waren hier belangrijk voor een duidelijke hiërarchie en structuur. Ik werkte mijn Figma-borden af." },
+            { week: 5, titel: "Introductie VSC: HTML en CSS", tekst: "In week vijf maakte ik kennis met Visual Studio Code, HTML en CSS. Ik vroeg, zoals gezegd in de les, aan AI om mijn Figma-borden zo goed mogelijk te coderen als HTML. De code kwam helemaal niet overeen met mijn borden van Figma. Deze week werkte ik dus aan het verbeteren van de code van mijn borden met de hulp van AI door steeds aanpassingen te vragen." },
+            { week: 6, titel: "Interactie en Knoppen", tekst: "Ik probeerde verschillende dingen uit om mijn bord dynamisch te maken, zoals een dynamische klok en andere elementen. Ik leerde gebruikmaken van JavaScript-functies. Ik probeerde logica en stijl toe te voegen aan mijn code, zoals het weergeven van de neonkleuren en de status (op tijd, vertraagd en geannuleerd) met de juiste contrastrijke kleuren." },
+            { week: 7, titel: "CSS-styling & Layout", tekst: "Deze week werkte ik aan het verbeteren van de code van mijn borden; er waren nog veel dingen waar ik niet tevreden over was. Dit nam veel tijd in beslag omdat ik het moeilijk vond om alles juist te vertalen naar het gewenste resultaat." },
+            { week: 8, titel: "Componenten: Tabellen & Wagon", tekst: "Hier werkte ik nog steeds verder aan alles om mijn borden beter te maken. In deze week maakte ik ook de symbolen voor in mijn wagon voor de treinverdeling. Dit vond ik heel moeilijk en het duurde lang omdat het niet direct lukte zoals ik het wilde, maar uiteindelijk is het me gelukt. Mijn borden zijn nu eindelijk af." },
+            { week: 9, titel: "Filteren & Gemini Switch", tekst: "Deze week begon ik aan het coderen van mijn app. Ik gaf AI mijn code van mijn drie afgewerkte borden en vroeg om hier een basis-app mee te maken. Dit was handig om mee te beginnen omdat ik dan al een basis had. Ik vroeg daarna om aanpassingen zodat het er uiteindelijk visueel uitzag en interactief werkte zoals ik het wilde. De vorige weken werkte ik steeds met ChatGPT, waar ik veel moeite mee had. Deze week begon ik te werken met <span class='highlight'>Gemini</span>, wat veel beter werkte voor mij, waardoor alles veel sneller verliep." },
+            { week: 10, titel: "JavaScript & Proces-opdracht", tekst: "Ik begon aan de opdracht voor het weekproces. Ik werkte eerst alles uit in mijn document en schetste daarna snel een visueel idee. Ik vertaalde dit idee naar AI en de AI gaf mij al een basis om mee te starten. Ik voegde de tekst toe die ik erin wilde en begon daarna weer aanpassingen te vragen tot ik tevreden was met het resultaat en de werking." },
+            { week: 11, titel: "Animatie & Finetuning", tekst: "Ik werkte alles tot in de details zo goed mogelijk af en finetunede de laatste elementen. Ik keek alles grondig na in zowel Figma als de code om de puntjes op de i te zetten." },
+            { week: 12, titel: "Finaliseren & Oplevering", tekst: "Ik voltooide de projectdocumentatie en maakte de finale screenshots van het prototype. Ik heb alles op tijd en correct geüpload. Het project 'Lost In Translation' is hiermee succesvol afgerond!" }
+        ];
+
+        const timeline = document.getElementById('timeline');
+        procesData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'week-card';
+            card.innerHTML = `<div><div class="week-number">WEEK ${item.week}</div><div class="week-title">${item.titel}</div></div><i class="fas fa-chevron-right" style="color:var(--yellow-neon); margin-top:15px; align-self: flex-end;"></i>`;
+            card.onclick = () => openModal(item);
+            timeline.appendChild(card);
+        });
+
+        function openModal(item) {
+            document.getElementById('modalTitle').innerText = `WEEK ${item.week}: ${item.titel}`;
+            document.getElementById('modalText').innerHTML = `<p>${item.tekst}</p>`;
+            document.getElementById('weekModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('weekModal').style.display = 'none'; }
+        window.onclick = (e) => { if (e.target == document.getElementById('weekModal')) closeModal(); }
+    </script>
+</body>
+</html>

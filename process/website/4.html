@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekproces - Lost In Translation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #000a1a;
+            --bg-card: #001d4d;
+            --rail-blue: #0057ff;
+            --yellow-neon: #ffd300;
+            --white: #ffffff;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--white);
+            font-family: var(--font-mono);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--yellow-neon);
+            padding-bottom: 15px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        header h1 {
+            font-family: 'Jeju Gothic', sans-serif;
+            color: var(--yellow-neon);
+            margin: 0;
+            letter-spacing: 2px;
+            font-size: 2rem;
+        }
+
+        /* KNOP NAAR DE APP */
+        .launch-btn {
+            background: var(--yellow-neon);
+            color: var(--bg-dark);
+            padding: 15px 30px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            font-family: 'Jeju Gothic', sans-serif;
+            box-shadow: 0 0 15px rgba(255, 211, 0, 0.4);
+        }
+        .launch-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 211, 0, 0.6);
+        }
+
+        .timeline {
+            max-width: 800px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .week-card {
+            background: var(--bg-card);
+            border: 1px solid var(--rail-blue);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .week-card:hover {
+            border-color: var(--yellow-neon);
+            background: var(--rail-blue);
+        }
+
+        .week-card h3 { margin: 0; font-size: 1.2rem; }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 10, 26, 0.95);
+            z-index: 1000;
+            justify-content: center; align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 2px solid var(--yellow-neon);
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute; top: 10px; right: 15px;
+            color: var(--yellow-neon); font-size: 1.5rem; cursor: pointer;
+        }
+
+        #modalTitle { color: var(--yellow-neon); margin-top: 0; border-bottom: 1px solid var(--rail-blue); padding-bottom: 10px; }
+        .highlight { color: var(--yellow-neon); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>PROCESS LOG</h1>
+        <p>Prototyping Tools 1: Stations Informatie App</p>
+    </header>
+
+    <a href="index.html" class="launch-btn">
+        <i class="fas fa-external-link-alt"></i> BEKIJK DE LIVE APP
+    </a>
+
+    <div class="timeline" id="timeline"></div>
+
+    <div class="modal" id="weekModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Week X</h2>
+            <div id="modalText"></div>
+        </div>
+    </div>
+
+    <script>
+        const procesData = [
+            { week: 1, titel: "Concept", tekst: "Onderzoek naar doelgroepen: de haastige forens en anderstaligen. Focus op snelle scanbaarheid van data." },
+            { week: 2, titel: "Schetsen", tekst: "Low-fi prototypes op papier. Hiërarchie bepaald voor Home, Departures en Detail views." },
+            { week: 3, titel: "Stijl", tekst: "Minimalistische 'Japanse' stijl gekozen. Kleurpalet: Deep Blue & Neon Yellow. Fonts: Jeju Gothic & JetBrains Mono." },
+            { week: 4, titel: "Figma", tekst: "Midi-prototypes met rij-componenten, secties en grids. De visuele structuur staat vast." },
+            { week: 5, titel: "Code Start", tekst: "Introductie VS Code. Eerste confrontatie: AI-code kwam niet overeen met ontwerp, dus zelf gaan sleutelen aan de HTML/CSS." },
+            { week: 6, titel: "JS Logica", tekst: "JavaScript toegevoegd voor dynamische statussen (vertragingen) en kleurcontrasten in de lijst." },
+            { week: 7, titel: "Layout Fixes", tekst: "Vertaling van Figma naar Code geperfectioneerd. Veel tijd besteed aan de juiste positionering van elementen." },
+            { week: 8, titel: "Wagon Details", tekst: "Symbolen en treinverdeling gecodeerd. Technisch lastig maar essentieel voor de reiziger." },
+            { week: 9, titel: "App Bouw", tekst: "Samenvoeging tot één app. Switch van ChatGPT naar <span class='highlight'>Gemini</span> zorgde voor een snellere workflow en betere code." },
+            { week: 10, titel: "Documentatie", tekst: "Start van dit weekproces overzicht. Visuele ideeën vertaald naar deze interactieve tijdlijn." },
+            { week: 11, titel: "Finetuning", tekst: "Puntjes op de i. Alle interacties nagelopen en details in de CSS verfijnd." },
+            { week: 12, titel: "Oplevering", tekst: "Finale screenshots gemaakt en projectdocumentatie voltooid. Klaar voor upload!" }
+        ];
+
+        const timeline = document.getElementById('timeline');
+        procesData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'week-card';
+            card.innerHTML = `<h3>Week ${item.week}</h3><p style="font-size:0.7rem; opacity:0.7">${item.titel}</p>`;
+            card.onclick = () => openModal(item);
+            timeline.appendChild(card);
+        });
+
+        function openModal(item) {
+            document.getElementById('modalTitle').innerText = `Week ${item.week}: ${item.titel}`;
+            document.getElementById('modalText').innerHTML = item.tekst;
+            document.getElementById('weekModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('weekModal').style.display = 'none'; }
+        window.onclick = (e) => { if (e.target == document.getElementById('weekModal')) closeModal(); }
+    </script>
+</body>
+</html>

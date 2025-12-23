@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="nl" class="bg-[#00112e] text-white">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Perron 3 - Brussel-Centraal</title>
+<link href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+:root {
+  --bg-main: #001d4d;
+  --bg-panel: #002366;
+  --bg-panel-alt: #002b7a;
+  --blue-light: #bcd4ff;
+  --yellow: #ffd300;
+  --orange: #ff9100;
+  --red: #ff4040;
+  --green: #00cc66;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #00112e;
+  min-height: 100vh;
+  font-family: "JetBrains Mono", monospace;
+  margin: 0;
+  color: white;
+}
+
+.board {
+  width: 500px;
+  max-width: 95%;
+  background: var(--bg-main);
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0,60,255,0.3);
+  padding: 1rem 1.25rem 1.5rem;
+  border: 1px solid #003f9e;
+}
+
+/* Header */
+.header {
+  text-align: left;
+  border-bottom: 2px solid #003d95;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.clock {
+  text-align: right;
+  font-size: 1rem;
+  color: #cde7ff;
+  margin-bottom: 0.25rem;
+}
+
+.header h1 {
+  font-family: "Jeju Gothic", sans-serif;
+  font-size: 1.4rem;
+  color: var(--yellow);
+  margin: 0;
+}
+
+.header h2 {
+  font-size: 1rem;
+  color: #bfe0ff;
+  margin-top: 0.25rem;
+  text-transform: capitalize;
+}
+
+/* Perron nummer */
+.platform-number {
+  background: var(--yellow);
+  color: #001a4d;
+  padding: 0.3rem 0.8rem;
+  border-radius: 0.4rem;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Big train block */
+.main-train {
+  background: var(--bg-panel);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: inset 0 0 8px rgba(0,0,60,0.6);
+  margin-bottom: 1rem;
+}
+
+/* Train header */
+.train-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+}
+
+.dest-yellow {
+  font-family: "Jeju Gothic", sans-serif;
+  font-size: 1.4rem;
+  color: var(--yellow);
+  margin: 0;
+}
+
+.dest-multilang {
+  color: var(--blue-light);
+  font-size: 0.85rem;
+  margin-top: 0.2rem;
+}
+
+/* Train info for main train */
+.train-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.train-info .train-type {
+  order: 1;
+}
+
+.train-info .status {
+  order: 2;
+  margin-left: 1rem;
+}
+
+.train-info .train-time {
+  order: 3;
+  margin-left: auto;
+}
+
+/* Train info for smaller trains (right aligned time) */
+.train-type {
+  background: #0057ff;
+  color: white;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  box-shadow: 0 0 10px rgba(59,167,255,0.4);
+}
+
+.train-time {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.status {
+  color: var(--green);
+  font-weight: bold;
+}
+
+/* List of trains */
+.train-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.train-row {
+  background: var(--bg-panel-alt);
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.train-row:nth-child(even) {
+  background: var(--bg-panel);
+}
+
+.train-row.cancelled {
+  background: rgba(255,0,0,0.15);
+  color: var(--red);
+  font-weight: bold;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+}
+
+.left .type {
+  font-weight: bold;
+  color: #bfe0ff;
+}
+
+.left .dest {
+  font-size: 1.1rem;
+  color: var(--yellow);
+  text-transform: capitalize;
+}
+
+.left .via-container {
+  width: 100%;
+  height: auto;
+  margin-top: 0.2rem;
+}
+
+.left .via {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #a5c2ff;
+  font-size: 0.85rem;
+}
+
+.left .multilang {
+  font-size: 0.75rem;
+  color: #bcd4ff;
+  margin-top: 0.1rem;
+}
+
+.right {
+  text-align: right;
+}
+
+.right .time {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.right .delay {
+  color: var(--orange);
+  font-weight: bold;
+  display: inline-block;
+  margin-top: 0.2rem;
+  line-height: 1.8rem;
+}
+
+.right .cancel {
+  color: var(--red);
+  font-weight: bold;
+  font-size: 0.95rem;
+  margin-top: 0.2rem;
+}
+</style>
+</head>
+<body>
+
+<div class="board">
+  <div class="clock">16:31</div>
+  <div class="header">
+    <h1>PERRON / VOIE / GLEIS <span class="platform-number">3</span></h1>
+    <h2>Brussel-Centraal / Bruxelles-Central</h2>
+  </div>
+
+  <!-- Eerste grote trein -->
+  <div class="main-train">
+    <div class="train-header">
+      <h3 class="dest-yellow">Antwerpen-Centraal</h3>
+      <small class="dest-multilang">Anvers-Central / Antwerpen-Zentral</small>
+    </div>
+    <div class="via-container">
+      <span class="via">via Mechelen – Lier – Antwerpen-Berchem</span>
+    </div>
+    <div class="train-info">
+      <div class="train-type">IC</div>
+      <div class="status">Aan perron</div>
+      <div class="train-time">16:32</div>
+    </div>
+  </div>
+
+  <!-- Lijst van andere treinen -->
+  <div class="train-list">
+    <div class="train-row">
+      <div class="left">
+        <span class="type">S</span>
+        <span class="dest">Schaarbeek – Leuven</span>
+        <span class="multilang">Schaerbeek – Louvain / Schaarbeek – Leuven</span>
+        <div class="via-container">
+          <span class="via">via Mechelen – Leuven – Aarschot</span>
+        </div>
+      </div>
+      <div class="right">
+        <span class="time">16:34</span><br />
+        <span class="delay">+5</span>
+      </div>
+    </div>
+
+    <div class="train-row">
+      <div class="left">
+        <span class="type">EC</span>
+        <span class="dest">Brussel-Zuid</span>
+        <span class="multilang">Bruxelles-Midi / Brüssel-Süd</span>
+        <div class="via-container">
+          <span class="via">via Gent – Kortrijk – Lille</span>
+        </div>
+      </div>
+      <div class="right">
+        <span class="time">16:39</span><br />
+        <span class="delay">+5</span>
+      </div>
+    </div>
+
+    <div class="train-row cancelled">
+      <div class="left">
+        <span class="type">IC</span>
+        <span class="dest">Hasselt – Tongeren</span>
+        <span class="multilang">Hasselt – Tongres / Hasselt – Tongeren</span>
+        <div class="via-container">
+          <span class="via">via Genk – Borgloon – Tongeren</span>
+        </div>
+      </div>
+      <div class="right">
+        <span class="time">16:41</span><br />
+        <span class="cancel">GEANNULEERD</span>
+      </div>
+    </div>
+
+    <div class="train-row">
+      <div class="left">
+        <span class="type">S</span>
+        <span class="dest">Antwerpen-Centraal</span>
+        <span class="multilang">Anvers-Central / Antwerpen-Zentral</span>
+        <div class="via-container">
+          <span class="via">via Mechelen – Lier – Antwerpen-Berchem</span>
+        </div>
+      </div>
+      <div class="right">
+        <span class="time">16:48</span><br />
+        <span class="delay">+13</span>
+      </div>
+    </div>
+
+    <div class="train-row">
+      <div class="left">
+        <span class="type">IC</span>
+        <span class="dest">Namen</span>
+        <span class="multilang">Namur / Namur</span>
+        <div class="via-container">
+          <span class="via">via Charleroi – Namur</span>
+        </div>
+      </div>
+      <div class="right">
+        <span class="time">16:53</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
